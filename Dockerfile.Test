@@ -1,0 +1,17 @@
+FROM roonga/dotnet-6-test-runner:latest AS build
+WORKDIR /src
+ARG BUILD_PAT
+
+COPY ["Reference.TransactionalOutbox.Tests/Reference.TransactionalOutbox.Tests.csproj", "Reference.TransactionalOutbox.Tests/"]
+COPY ["Reference.TransactionalOutbox/Reference.TransactionalOutbox.csproj", "Reference.TransactionalOutbox/"]
+
+RUN dotnet restore "Reference.TransactionalOutbox.Tests/Reference.TransactionalOutbox.Tests.csproj"
+
+COPY . .
+WORKDIR "/src/Reference.TransactionalOutbox.Tests"
+RUN dotnet build "Reference.TransactionalOutbox.Tests.csproj"
+
+FROM build AS testrunner
+WORKDIR /src
+
+CMD ["sh", "dotnet-test.sh"]

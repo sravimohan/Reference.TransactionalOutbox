@@ -25,8 +25,15 @@ public class OutboxPollingTests
         // wait for service to be ready
         RetryPolicy.Execute(() =>
         {
+            var livezResponse = httpClient.GetAsync($"{Setup.ApiUrl}/livez");
             var readyzResponse = httpClient.GetAsync($"{Setup.ApiUrl}/readyz");
-            if (readyzResponse.Result.StatusCode == HttpStatusCode.OK) return;
+
+            if (
+                livezResponse.Result.StatusCode == HttpStatusCode.OK &&
+                readyzResponse.Result.StatusCode == HttpStatusCode.OK)
+            {
+                return;
+            }
 
             Console.WriteLine($"Waiting for service to be ready...");
             throw new ApplicationException();

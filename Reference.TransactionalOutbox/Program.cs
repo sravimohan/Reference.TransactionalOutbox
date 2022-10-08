@@ -14,21 +14,11 @@ builder.Services
 
 var app = builder.Build();
 
-app.MapPost("/order/", async (CreateOrderHandler handler, CreateOrderRequest request) =>
-{
-    await handler.ProcessAsync(request);
-});
+app.MapPost("/order/", async (CreateOrderHandler handler, CreateOrderRequest request) => await handler.ProcessAsync(request));
 
-app.MapHealthChecks("/readyz", new HealthCheckOptions
-{
-    Predicate = healthCheck => healthCheck.Tags.Contains("ready")
-});
+app.MapHealthChecks("/readyz", new HealthCheckOptions { Predicate = healthCheck => healthCheck.Tags.Contains("ready") });
 
-app.MapHealthChecks("livez", new HealthCheckOptions
-{
-    Predicate = _ => false
-});
-
+app.MapHealthChecks("livez", new HealthCheckOptions { Predicate = _ => false });
 
 app.Run();
 

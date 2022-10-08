@@ -2,8 +2,6 @@
 
 public record OrderCreatedEventConfiguration(string TopicArn);
 
-public record OrderCreated(int ProductId, int Quantity);
-
 public class PublishOrderCreatedHandler
 {
     readonly SnsPublisher _snsPublisher;

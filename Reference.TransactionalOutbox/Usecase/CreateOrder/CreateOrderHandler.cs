@@ -10,6 +10,11 @@ public record Outbox(string EventType, string EventValue);
 
 public record CreateOrderRequest(int ProductId, int Quantity);
 
+public record OrderCreated(int ProductId, int Quantity)
+{
+    internal OrderCreated(Order order) : this(order.ProductId, order.Quantity) { }
+};
+
 public class CreateOrderHandler
 {
     const string EventType = "OrderCreated";
@@ -25,7 +30,7 @@ public class CreateOrderHandler
     public async Task ProcessAsync(CreateOrderRequest request)
     {
         var order = new Order(request.ProductId, request.Quantity);
-        var outbox = new Outbox(EventType, JsonSerializer.Serialize(order));
+        var outbox = new Outbox(EventType, JsonSerializer.Serialize(new OrderCreated(order)));
 
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         await InsertOrder(order);

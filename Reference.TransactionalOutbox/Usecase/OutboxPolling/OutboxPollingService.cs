@@ -28,6 +28,13 @@ public class OutboxPollingService : BackgroundService
         {
             try
             {
+                var isReady = await ReadyzHealthCheck.CanConnectToDatabase(_db, stoppingToken);
+                if (!isReady)
+                {
+                    _logger.LogInformation("OutboxPollingService cannot connect to database");
+                    continue;
+                }
+
                 await Process(stoppingToken);
             }
             catch (Exception exception)

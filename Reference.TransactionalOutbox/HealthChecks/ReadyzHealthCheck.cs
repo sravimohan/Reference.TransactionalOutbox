@@ -7,23 +7,37 @@ public class ReadyzHealthCheck : IHealthCheck
 {
     readonly IDbConnection _db;
 
+    static readonly TimeSpan Timeout = TimeSpan.FromSeconds(1);
+
     public ReadyzHealthCheck(IDbConnection db)
     {
         _db = db;
     }
 
-    public Task<HealthCheckResult> CheckHealthAsync(
+    public async Task<HealthCheckResult> CheckHealthAsync(
         HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         try
         {
-            var timeout = new TimeSpan(0, 0, 1);
-            _ = _db.ExecuteScalarAsync<string>("select GETDATE()").WaitAsync(timeout, cancellationToken).Result;
-            return Task.FromResult(HealthCheckResult.Healthy());
+            await CanConnectToDatabase(_db, cancellationToken);
+            return HealthCheckResult.Healthy();
         }
         catch
         {
-            return Task.FromResult(new HealthCheckResult(context.Registration.FailureStatus));
+            return new HealthCheckResult(context.Registration.FailureStatus);
+        }
+    }
+
+    internal static async Task<bool> CanConnectToDatabase(IDbConnection db, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await db.ExecuteScalarAsync<string>("select GETDATE()").WaitAsync(Timeout, cancellationToken);
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 }

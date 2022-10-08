@@ -41,22 +41,22 @@ public class OutboxPollingService : BackgroundService
 
     async Task Process(CancellationToken ct)
     {
-        using var scope = new TransactionScope(
-           TransactionScopeOption.RequiresNew,
-           new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }, // required for using READPAST hint
-           TransactionScopeAsyncFlowOption.Enabled); // required for async
+        using var scope = CreateTransactionScope();
 
         var events = await ReadFromOutbox();
         _logger.LogInformation("Handling {count} events from outbox", events.Count());
-
 
         if (!events.Any())
             return;
 
         await HandleOrderCreated(events, ct);
-
         scope.Complete();
     }
+
+    static TransactionScope CreateTransactionScope() =>
+       new(TransactionScopeOption.RequiresNew,
+           new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }, // required for using READPAST hint
+           TransactionScopeAsyncFlowOption.Enabled); // required for async
 
     async Task HandleOrderCreated(IEnumerable<Outbox> events, CancellationToken ct)
     {

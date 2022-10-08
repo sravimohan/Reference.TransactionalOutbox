@@ -13,7 +13,7 @@ internal static class Setup
 
     public static string ApiUrl =>
     string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"))
-        ? "http://localhost:5000" : "http://api:5000";
+        ? "http://localhost:5000" : "http://api";
 
     internal static readonly AmazonSQSClient SQSClient;
     internal static readonly AmazonSimpleNotificationServiceClient SNSClient;

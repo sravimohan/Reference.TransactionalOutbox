@@ -2,10 +2,6 @@
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddCreateOrder(this IServiceCollection services)
-    {
+    public static IServiceCollection AddCreateOrder(this IServiceCollection services) =>
         services.AddScoped<CreateOrderHandler>();
-
-        return services;
-    }
 }

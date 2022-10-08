@@ -2,10 +2,6 @@
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddPublishOrderCreated(this IServiceCollection services)
-    {
+    public static IServiceCollection AddPublishOrderCreated(this IServiceCollection services) =>
         services.AddTransient<PublishOrderCreatedHandler>();
-
-        return services;
-    }
 }

@@ -1,7 +1,5 @@
 ﻿namespace Reference.TransactionalOutbox.Application.Usecase.PublishOrderCreated;
 
-public record OrderCreatedEventConfiguration(string TopicArn);
-
 public class PublishOrderCreatedHandler
 {
     readonly SnsPublisher _snsPublisher;

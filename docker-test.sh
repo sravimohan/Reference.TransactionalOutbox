@@ -12,4 +12,4 @@ docker compose build
 docker compose up \
     --exit-code-from test-runner \
     --abort-on-container-exit \
-    --scale api=3
+    --scale api=1

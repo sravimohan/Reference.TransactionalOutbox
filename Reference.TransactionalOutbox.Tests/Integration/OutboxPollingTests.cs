@@ -50,7 +50,7 @@ public class OutboxPollingTests
         orders.ForEach(async order => await httpClient.PostAsJsonAsync($"{Setup.ApiUrl}/order", order));
 
         // wait for events to be published
-        Thread.Sleep(2000);
+        Thread.Sleep(5000);
 
         // subscribe
         var sqs = new SqsHandler(Setup.SQSClient, queueUrl);

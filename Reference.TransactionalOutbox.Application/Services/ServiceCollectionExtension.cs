@@ -16,24 +16,15 @@ public static class ServiceCollectionExtension
             .AddTransient<DatabaseHealthCheck>();
     }
 
-    public static IServiceCollection AddEventPublishing(this IServiceCollection services, AWS aws)
-    {
-        services
-            .AddSingleton<IAmazonSimpleNotificationService>(_ => SNSClient(aws.ServiceURL))
+    public static IServiceCollection AddEventPublishing(this IServiceCollection services, AWS aws) =>
+        services.AddSingleton<IAmazonSimpleNotificationService>(_ => SNSClient(aws.ServiceURL))
             .AddSingleton(_ => aws.SNS)
             .AddSingleton<SnsPublisher>();
-
-        return services;
-    }
 
     static AmazonSimpleNotificationServiceClient SNSClient(string? ServiceURL = null)
     {
         var config = new AmazonSimpleNotificationServiceConfig();
-
-        if (ServiceURL != null)
-        {
-            config.ServiceURL = ServiceURL;
-        }
+        if (ServiceURL != null) config.ServiceURL = ServiceURL;
 
         return new AmazonSimpleNotificationServiceClient(config);
     }

@@ -13,7 +13,7 @@ echo 'Running tests with code coverage'
 dotnet sonarscanner begin \
     /k:"Reference.TransactionalOutbox" \
     /d:sonar.host.url="http://host.docker.internal:9000" \
-    /d:sonar.login="sqp_44bf90c19aaf152a273348ed83cc4fde34ddff25" \
+    /d:sonar.login="sqp_fc8dfb8ff47aa1d0608c51fb6056c72fafa91bb1" \
     /d:sonar.cs.vscoveragexml.reportsPaths=/coverage/coverage.xml
 
 dotnet build --no-incremental
@@ -21,4 +21,4 @@ dotnet-coverage collect 'dotnet test --no-restore --no-build --verbosity normal'
 echo 'waiting for coverage data to be processed...' && sleep 5
 
 dotnet-coverage merge -o /coverage/coverage.xml -f xml -r /coverage/*.xml
-dotnet sonarscanner end /d:sonar.login="sqp_44bf90c19aaf152a273348ed83cc4fde34ddff25"
+dotnet sonarscanner end /d:sonar.login="sqp_fc8dfb8ff47aa1d0608c51fb6056c72fafa91bb1"

@@ -1,5 +1,5 @@
 ﻿using Polly;
-using Reference.TransactionalOutbox.Api.Usecase.CreateOrder;
+using Reference.TransactionalOutbox.Application.Usecase.CreateOrder;
 using System.Net;
 using System.Net.Http.Json;
 

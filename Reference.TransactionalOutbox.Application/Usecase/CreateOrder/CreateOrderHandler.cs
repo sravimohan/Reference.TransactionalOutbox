@@ -1,8 +1,4 @@
-﻿using Dapper;
-using System.Text.Json;
-using System.Transactions;
-
-namespace Reference.TransactionalOutbox.Api.Usecase.CreateOrder;
+﻿namespace Reference.TransactionalOutbox.Application.Usecase.CreateOrder;
 
 public record Order(int ProductId, int Quantity);
 

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reference.TransactionalOutb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reference.TransactionalOutbox.Api", "Reference.TransactionalOutbox.Api\Reference.TransactionalOutbox.Api.csproj", "{3641F87A-6115-4CBC-AE69-635409E6A6C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reference.TransactionalOutbox.Application", "Reference.TransactionalOutbox.Application\Reference.TransactionalOutbox.Application.csproj", "{648EC1FB-6E39-4F41-8F6C-865082A25E24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3641F87A-6115-4CBC-AE69-635409E6A6C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3641F87A-6115-4CBC-AE69-635409E6A6C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3641F87A-6115-4CBC-AE69-635409E6A6C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{648EC1FB-6E39-4F41-8F6C-865082A25E24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{648EC1FB-6E39-4F41-8F6C-865082A25E24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{648EC1FB-6E39-4F41-8F6C-865082A25E24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{648EC1FB-6E39-4F41-8F6C-865082A25E24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

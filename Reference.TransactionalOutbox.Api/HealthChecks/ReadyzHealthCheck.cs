@@ -1,43 +1,17 @@
-﻿using Dapper;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Reference.TransactionalOutbox.Application.Usecase.HealthChecks;
 
 namespace Reference.TransactionalOutbox.Api.HealthChecks;
 
 public class ReadyzHealthCheck : IHealthCheck
 {
-    readonly IDbConnection _db;
+    readonly DatabaseHealthCheck _databaseHealthCheck;
 
-    static readonly TimeSpan Timeout = TimeSpan.FromSeconds(1);
+    public ReadyzHealthCheck(DatabaseHealthCheck databaseHealthCheck) =>
+        _databaseHealthCheck = databaseHealthCheck;
 
-    public ReadyzHealthCheck(IDbConnection db)
-    {
-        _db = db;
-    }
-
-    public async Task<HealthCheckResult> CheckHealthAsync(
-        HealthCheckContext context, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            await CanConnectToDatabase(_db, cancellationToken);
-            return HealthCheckResult.Healthy();
-        }
-        catch
-        {
-            return new HealthCheckResult(context.Registration.FailureStatus);
-        }
-    }
-
-    internal static async Task<bool> CanConnectToDatabase(IDbConnection db, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            await db.ExecuteScalarAsync<string>("select GETDATE()").WaitAsync(Timeout, cancellationToken);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default) =>
+        await _databaseHealthCheck.CanConnectToDatabase(cancellationToken)
+            ? HealthCheckResult.Healthy()
+            : new HealthCheckResult(context.Registration.FailureStatus);
 }

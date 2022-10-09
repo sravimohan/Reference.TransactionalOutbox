@@ -1,4 +1,4 @@
-﻿namespace Reference.TransactionalOutbox.Api.Usecase.CreateOrder;
+﻿namespace Reference.TransactionalOutbox.Application.Usecase.CreateOrder;
 
 public static class ServiceCollectionExtension
 {

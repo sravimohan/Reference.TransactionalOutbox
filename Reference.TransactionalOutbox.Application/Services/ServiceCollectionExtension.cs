@@ -1,7 +1,8 @@
 ﻿using Amazon.SimpleNotificationService;
-using Reference.TransactionalOutbox.Api.Options;
+using Microsoft.Extensions.Configuration;
+using Reference.TransactionalOutbox.Application.Options;
 
-namespace Reference.TransactionalOutbox.Api.Services;
+namespace Reference.TransactionalOutbox.Application.Services;
 
 public static class ServiceCollectionExtension
 {
@@ -10,18 +11,13 @@ public static class ServiceCollectionExtension
         var connectionstring = configuration.GetConnectionString("Reference");
         Console.WriteLine($"Connecting to DB: {connectionstring}");
 
-        services
-            .AddTransient<IDbConnection>(db =>
-                new SqlConnection(connectionstring)
-            );
-
-        return services;
+        return services
+            .AddTransient<IDbConnection>(db => new SqlConnection(connectionstring))
+            .AddTransient<DatabaseHealthCheck>();
     }
 
-    public static IServiceCollection AddEventPublishing(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddEventPublishing(this IServiceCollection services, AWS aws)
     {
-        var aws = configuration.GetSection(nameof(AWS)).Get<AWS>();
-
         services
             .AddSingleton<IAmazonSimpleNotificationService>(_ => SNSClient(aws.ServiceURL))
             .AddSingleton(_ => aws.SNS)

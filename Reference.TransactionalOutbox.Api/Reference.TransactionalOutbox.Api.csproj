@@ -8,10 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
-	<PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.4.20" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Reference.TransactionalOutbox.Application\Reference.TransactionalOutbox.Application.csproj" />
   </ItemGroup>
 
 </Project>

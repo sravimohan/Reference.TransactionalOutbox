@@ -1,11 +1,6 @@
-
-using Reference.TransactionalOutbox.Api.HealthChecks;
-using Reference.TransactionalOutbox.Api.Services;
-using Reference.TransactionalOutbox.Api.Usecase.CreateOrder;
-using Reference.TransactionalOutbox.Api.Usecase.OutboxPolling;
-using Reference.TransactionalOutbox.Api.Usecase.PublishOrderCreated;
-
 var builder = WebApplication.CreateBuilder(args);
+
+var aws = builder.Configuration.GetSection(nameof(AWS)).Get<AWS>();
 
 builder.Services
     .AddHealthChecks()
@@ -13,7 +8,7 @@ builder.Services
 
 builder.Services
     .AddDatabase(builder.Configuration)
-    .AddEventPublishing(builder.Configuration)
+    .AddEventPublishing(aws)
     .AddCreateOrder()
     .AddOutboxPolling()
     .AddPublishOrderCreated();

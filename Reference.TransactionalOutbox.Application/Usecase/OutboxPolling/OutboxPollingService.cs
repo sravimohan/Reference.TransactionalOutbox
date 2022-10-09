@@ -1,15 +1,12 @@
-﻿using Dapper;
-using Reference.TransactionalOutbox.Api.HealthChecks;
-using Reference.TransactionalOutbox.Api.Usecase.CreateOrder;
-using Reference.TransactionalOutbox.Api.Usecase.PublishOrderCreated;
-using System.Transactions;
+﻿using Microsoft.Extensions.Hosting;
 using IsolationLevel = System.Transactions.IsolationLevel;
 
-namespace Reference.TransactionalOutbox.Api.Usecase.OutboxPolling;
+namespace Reference.TransactionalOutbox.Application.Usecase.OutboxPolling;
 
 public class OutboxPollingService : BackgroundService
 {
     readonly IDbConnection _db;
+    readonly DatabaseHealthCheck _databaseHealthCheck;
     readonly PublishOrderCreatedHandler _publishOrderCreatedHandler;
     readonly ILogger<OutboxPollingService> _logger;
 
@@ -18,11 +15,13 @@ public class OutboxPollingService : BackgroundService
     public OutboxPollingService(
         IDbConnection db,
         PublishOrderCreatedHandler publishOrderCreatedHandler,
-        ILogger<OutboxPollingService> logger)
+        ILogger<OutboxPollingService> logger,
+        DatabaseHealthCheck databaseHealthCheck)
     {
         _db = db;
         _publishOrderCreatedHandler = publishOrderCreatedHandler;
         _logger = logger;
+        _databaseHealthCheck = databaseHealthCheck;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -31,7 +30,7 @@ public class OutboxPollingService : BackgroundService
         {
             try
             {
-                var isReady = await ReadyzHealthCheck.CanConnectToDatabase(_db, stoppingToken);
+                var isReady = await _databaseHealthCheck.CanConnectToDatabase(stoppingToken);
                 if (!isReady)
                 {
                     _logger.LogInformation("OutboxPollingService cannot connect to database");

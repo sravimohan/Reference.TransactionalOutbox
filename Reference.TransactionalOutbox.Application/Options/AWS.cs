@@ -1,4 +1,4 @@
-﻿namespace Reference.TransactionalOutbox.Api.Options;
+﻿namespace Reference.TransactionalOutbox.Application.Options;
 
 public record AWS
 {

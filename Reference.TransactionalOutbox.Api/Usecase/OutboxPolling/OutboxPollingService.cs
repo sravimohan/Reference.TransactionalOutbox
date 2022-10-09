@@ -1,8 +1,11 @@
 ﻿using Dapper;
+using Reference.TransactionalOutbox.Api.HealthChecks;
+using Reference.TransactionalOutbox.Api.Usecase.CreateOrder;
+using Reference.TransactionalOutbox.Api.Usecase.PublishOrderCreated;
 using System.Transactions;
 using IsolationLevel = System.Transactions.IsolationLevel;
 
-namespace Reference.TransactionalOutbox.Usecase.OutboxPolling;
+namespace Reference.TransactionalOutbox.Api.Usecase.OutboxPolling;
 
 public class OutboxPollingService : BackgroundService
 {

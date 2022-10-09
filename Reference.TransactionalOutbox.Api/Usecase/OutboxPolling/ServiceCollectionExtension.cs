@@ -1,4 +1,4 @@
-﻿namespace Reference.TransactionalOutbox.Usecase.OutboxPolling;
+﻿namespace Reference.TransactionalOutbox.Api.Usecase.OutboxPolling;
 
 public static class ServiceCollectionExtension
 {

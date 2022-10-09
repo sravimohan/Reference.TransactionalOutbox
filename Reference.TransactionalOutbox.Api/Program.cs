@@ -1,4 +1,10 @@
 
+using Reference.TransactionalOutbox.Api.HealthChecks;
+using Reference.TransactionalOutbox.Api.Services;
+using Reference.TransactionalOutbox.Api.Usecase.CreateOrder;
+using Reference.TransactionalOutbox.Api.Usecase.OutboxPolling;
+using Reference.TransactionalOutbox.Api.Usecase.PublishOrderCreated;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services

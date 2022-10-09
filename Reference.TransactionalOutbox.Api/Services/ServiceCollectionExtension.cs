@@ -1,7 +1,7 @@
 ﻿using Amazon.SimpleNotificationService;
-using Reference.TransactionalOutbox.Options;
+using Reference.TransactionalOutbox.Api.Options;
 
-namespace Reference.TransactionalOutbox.Services;
+namespace Reference.TransactionalOutbox.Api.Services;
 
 public static class ServiceCollectionExtension
 {

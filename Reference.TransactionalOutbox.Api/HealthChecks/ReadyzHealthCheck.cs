@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace Reference.TransactionalOutbox.HealthChecks;
+namespace Reference.TransactionalOutbox.Api.HealthChecks;
 
 public class ReadyzHealthCheck : IHealthCheck
 {

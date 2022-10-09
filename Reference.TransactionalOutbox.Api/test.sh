@@ -1,5 +1,5 @@
 dotnet-coverage collect --session-id test-api --background --server-mode --output-format xml
-dotnet-coverage connect --background test-api dotnet Reference.TransactionalOutbox.dll
+dotnet-coverage connect --background test-api dotnet Reference.TransactionalOutbox.Api.dll
 
 # wait for application to start in background
 sleep 5

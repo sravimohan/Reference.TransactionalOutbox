@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Reference.TransactionalOutbox\Reference.TransactionalOutbox.csproj" />
+	  <ProjectReference Include="..\Reference.TransactionalOutbox.Api\Reference.TransactionalOutbox.Api.csproj" />
 	</ItemGroup>
 
 </Project>

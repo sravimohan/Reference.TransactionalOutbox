@@ -1,5 +1,5 @@
 ﻿using Polly;
-using Reference.TransactionalOutbox.Usecase.CreateOrder;
+using Reference.TransactionalOutbox.Api.Usecase.CreateOrder;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -50,7 +50,7 @@ public class OutboxPollingTests
         orders.ForEach(async order => await httpClient.PostAsJsonAsync($"{Setup.ApiUrl}/order", order));
 
         // wait for events to be published
-        Thread.Sleep(5000);
+        Thread.Sleep(2000);
 
         // subscribe
         var sqs = new SqsHandler(Setup.SQSClient, queueUrl);

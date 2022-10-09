@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Transactions;
 
-namespace Reference.TransactionalOutbox.Usecase.CreateOrder;
+namespace Reference.TransactionalOutbox.Api.Usecase.CreateOrder;
 
 public record Order(int ProductId, int Quantity);
 

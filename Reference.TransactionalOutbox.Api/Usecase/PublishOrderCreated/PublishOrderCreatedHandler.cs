@@ -1,4 +1,7 @@
-﻿namespace Reference.TransactionalOutbox.Usecase.PublishOrderCreated;
+﻿using Reference.TransactionalOutbox.Api.Services;
+using Reference.TransactionalOutbox.Api.Usecase.CreateOrder;
+
+namespace Reference.TransactionalOutbox.Api.Usecase.PublishOrderCreated;
 
 public record OrderCreatedEventConfiguration(string TopicArn);
 

@@ -3,7 +3,7 @@ WORKDIR /src
 ARG BUILD_PAT
 
 COPY ["Reference.TransactionalOutbox.Tests/Reference.TransactionalOutbox.Tests.csproj", "Reference.TransactionalOutbox.Tests/"]
-COPY ["Reference.TransactionalOutbox/Reference.TransactionalOutbox.csproj", "Reference.TransactionalOutbox/"]
+COPY ["Reference.TransactionalOutbox.Api/Reference.TransactionalOutbox.Api.csproj", "Reference.TransactionalOutbox.Api/"]
 
 RUN dotnet restore "Reference.TransactionalOutbox.Tests/Reference.TransactionalOutbox.Tests.csproj"
 

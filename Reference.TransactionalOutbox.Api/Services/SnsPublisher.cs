@@ -1,8 +1,8 @@
 ﻿using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
-using Reference.TransactionalOutbox.Options;
+using Reference.TransactionalOutbox.Api.Options;
 
-namespace Reference.TransactionalOutbox.Services;
+namespace Reference.TransactionalOutbox.Api.Services;
 
 
 public class SnsPublisher

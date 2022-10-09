@@ -4,7 +4,6 @@ using Reference.TransactionalOutbox.Application.Options;
 
 namespace Reference.TransactionalOutbox.Application.Services;
 
-
 public class SnsPublisher
 {
     readonly IAmazonSimpleNotificationService _sns;
@@ -25,9 +24,15 @@ public class SnsPublisher
         };
 
         var response = await _sns.PublishBatchAsync(request, ct);
-        return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
+
+        return response.HttpStatusCode == System.Net.HttpStatusCode.OK
+            && response.Successful.Count == messages.Count();
     }
 
     static List<PublishBatchRequestEntry> CreateBatchRequest(IEnumerable<string> ordersJson) =>
-        ordersJson.Select(order => new PublishBatchRequestEntry { Message = order }).ToList();
+        ordersJson.Select(order => new PublishBatchRequestEntry
+        {
+            Id = Guid.NewGuid().ToString(), // batch id must be unique per batch
+            Message = order
+        }).ToList();
 }

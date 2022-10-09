@@ -5,22 +5,23 @@ using System.Net.Http.Json;
 
 namespace Reference.TransactionalOutbox.Tests.Integration;
 
-public class OutboxPollingTests
+public class OutboxPollingTests : IClassFixture<InfrastructureFixture>
 {
+    readonly InfrastructureFixture _fixture;
+
     static Polly.Retry.RetryPolicy RetryPolicy => Policy.Handle<ApplicationException>()
         .WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromSeconds(1));
+
+    public OutboxPollingTests(InfrastructureFixture fixture)
+    {
+        _fixture = fixture;
+    }
 
     [Fact]
     public async Task Can_publish_and_subscribe()
     {
         // setup infrastructure
         var httpClient = new HttpClient();
-        var topicName = $"OrderCreated";
-        var queueName = $"OrderCreated";
-
-        var topicArn = await Setup.CreateTopic(topicName);
-        var queueUrl = await Setup.CreateQueue(queueName);
-        await Setup.SubscribeToTopic(topicArn, queueUrl);
 
         // wait for service to be ready
         RetryPolicy.Execute(() =>
@@ -53,7 +54,7 @@ public class OutboxPollingTests
         Thread.Sleep(5000);
 
         // subscribe
-        var sqs = new SqsHandler(Setup.SQSClient, queueUrl);
+        var sqs = new SqsHandler(Setup.SQSClient, _fixture.OrderCreatedQueueUrl);
         var handledEvents = await sqs.Handle(CancellationToken.None);
         Assert.Equal(orders.Count, handledEvents.Count);
     }

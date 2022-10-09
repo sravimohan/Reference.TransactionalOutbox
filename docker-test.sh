@@ -7,9 +7,9 @@ trap "docker compose kill --remove-orphans" EXIT
 rm -rf ./coverage
 docker compose build
 
-# docker compose run --rm test-runner
+docker compose up proxy --scale api=3
 
-docker compose up \
-    --exit-code-from test-runner \
-    --abort-on-container-exit \
-    --scale api=1
+# docker compose up \
+#     --exit-code-from test-runner \
+#     --abort-on-container-exit \
+#     --scale api=1

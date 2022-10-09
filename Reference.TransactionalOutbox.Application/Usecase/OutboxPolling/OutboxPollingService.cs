@@ -26,17 +26,12 @@ public class OutboxPollingService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        await WaitForReadyz(stoppingToken);
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                var isReady = await _databaseHealthCheck.CanConnectToDatabase(stoppingToken);
-                if (!isReady)
-                {
-                    _logger.LogInformation("OutboxPollingService cannot connect to database");
-                    continue;
-                }
-
                 await Process(stoppingToken);
             }
             catch (Exception exception)
@@ -44,6 +39,18 @@ public class OutboxPollingService : BackgroundService
                 _logger.LogError(exception, "OutboxPollingService");
             }
 
+            await Task.Delay(Frequency, stoppingToken);
+        }
+    }
+
+    async Task WaitForReadyz(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            var isReady = await _databaseHealthCheck.CanConnectToDatabase(stoppingToken);
+            if (isReady) return;
+
+            _logger.LogInformation("OutboxPollingService cannot connect to database");
             await Task.Delay(Frequency, stoppingToken);
         }
     }
@@ -74,5 +81,5 @@ public class OutboxPollingService : BackgroundService
     }
 
     async Task<IEnumerable<Outbox>> ReadFromOutbox() =>
-        await _db.QueryAsync<Outbox>("DELETE TOP (1) FROM Outbox WITH (READPAST) OUTPUT DELETED.EventType, DELETED.EventValue");
+        await _db.QueryAsync<Outbox>("DELETE TOP (10) FROM Outbox WITH (READPAST) OUTPUT DELETED.EventType, DELETED.EventValue");
 }

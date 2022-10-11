@@ -9,12 +9,15 @@ SCALE=$1
 rm -rf ./coverage
 docker compose build
 
-# docker compose up \
-#     --exit-code-from test-runner \
-#     --abort-on-container-exit \
-#     --scale api=${SCALE} \
-#     test-runner
-
+# run tests
 docker compose up \
+    --exit-code-from test-runner \
+    --abort-on-container-exit \
     --scale api=${SCALE} \
-    proxy
+    test-runner
+
+# docker compose up \
+#     --scale api=${SCALE} \
+#     proxy
+
+# docker compose up db

@@ -9,7 +9,7 @@ namespace Reference.TransactionalOutbox.Tests.Integration
         internal readonly string OrderCreatedQueueUrl;
         internal readonly string OrderCreatedSubscriptionArn;
 
-        readonly HttpClient httpClient = new();
+        readonly HttpClient _httpClient = new();
 
         public InfrastructureFixture()
         {
@@ -31,19 +31,17 @@ namespace Reference.TransactionalOutbox.Tests.Integration
         {
             RetryPolicy.Execute(() =>
             {
-                var livezResponse = httpClient.GetAsync($"{Setup.ApiUrl}/livez");
-                var readyzResponse = httpClient.GetAsync($"{Setup.ApiUrl}/readyz");
-
-                if (
-                    livezResponse.Result.StatusCode == HttpStatusCode.OK &&
-                    readyzResponse.Result.StatusCode == HttpStatusCode.OK)
-                {
-                    return;
-                }
-
                 Console.WriteLine($"Waiting for service to be ready...");
-                throw new ApplicationException();
+                CheckIfReady($"{Setup.ApiUrl}/livez");
+                CheckIfReady($"{Setup.ApiUrl}/readyz");
             });
+        }
+
+        void CheckIfReady(string url)
+        {
+            var response = _httpClient.GetAsync(url);
+            if (response.Result.StatusCode != HttpStatusCode.OK)
+                throw new ApplicationException();
         }
 
         public void Dispose()

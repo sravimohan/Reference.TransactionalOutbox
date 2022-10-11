@@ -1,0 +1,8 @@
+FROM mcr.microsoft.com/mssql/server:2019-latest
+EXPOSE 1433
+ENV ACCEPT_EULA Y
+ENV SA_PASSWORD Password123!
+WORKDIR /sql
+COPY ./sql .
+USER mssql
+CMD [ "/sql/entrypoint.sh" ]

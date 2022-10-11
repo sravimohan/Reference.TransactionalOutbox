@@ -31,8 +31,7 @@ internal static class Setup
             ServiceURL = ServiceURL
         };
 
-        var sqsClient = new AmazonSQSClient(sqsConfig);
-        return sqsClient;
+        return new AmazonSQSClient(sqsConfig);
     }
 
     static AmazonSimpleNotificationServiceClient CreateSNSClient()
@@ -42,8 +41,7 @@ internal static class Setup
             ServiceURL = ServiceURL
         };
 
-        var snsClient = new AmazonSimpleNotificationServiceClient(snsConfig);
-        return snsClient;
+        return new AmazonSimpleNotificationServiceClient(snsConfig);
     }
 
     public static async Task<string> CreateTopic(string topicName)

@@ -4,12 +4,20 @@ set -o nounset # undefined variable will cause an error
 
 trap "docker compose kill --remove-orphans" EXIT
 
+SCALE=$1
+
 rm -rf ./coverage
 docker compose build
 
-docker compose up proxy --scale api=3
+# run tests
+docker compose up \
+    --exit-code-from test-runner \
+    --abort-on-container-exit \
+    --scale api=${SCALE} \
+    test-runner
 
 # docker compose up \
-#     --exit-code-from test-runner \
-#     --abort-on-container-exit \
-#     --scale api=1
+#     --scale api=${SCALE} \
+#     proxy
+
+# docker compose up db

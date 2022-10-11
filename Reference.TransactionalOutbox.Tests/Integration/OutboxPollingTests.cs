@@ -1,61 +1,60 @@
-﻿using Polly;
-using Reference.TransactionalOutbox.Application.Usecase.CreateOrder;
-using System.Net;
+﻿using Reference.TransactionalOutbox.Application.Usecase.CreateOrder;
 using System.Net.Http.Json;
+using Xunit.Abstractions;
 
 namespace Reference.TransactionalOutbox.Tests.Integration;
 
 public class OutboxPollingTests : IClassFixture<InfrastructureFixture>
 {
     readonly InfrastructureFixture _fixture;
+    readonly HttpClient httpClient = new();
+    readonly ITestOutputHelper _output;
 
-    static Polly.Retry.RetryPolicy RetryPolicy => Policy.Handle<ApplicationException>()
-        .WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromSeconds(1));
-
-    public OutboxPollingTests(InfrastructureFixture fixture)
+    public OutboxPollingTests(InfrastructureFixture fixture, ITestOutputHelper output)
     {
         _fixture = fixture;
+        _output = output;
     }
 
     [Fact]
     public async Task Can_publish_and_subscribe()
     {
-        // setup infrastructure
-        var httpClient = new HttpClient();
-
-        // wait for service to be ready
-        RetryPolicy.Execute(() =>
-        {
-            var livezResponse = httpClient.GetAsync($"{Setup.ApiUrl}/livez");
-            var readyzResponse = httpClient.GetAsync($"{Setup.ApiUrl}/readyz");
-
-            if (
-                livezResponse.Result.StatusCode == HttpStatusCode.OK &&
-                readyzResponse.Result.StatusCode == HttpStatusCode.OK)
-            {
-                return;
-            }
-
-            Console.WriteLine($"Waiting for service to be ready...");
-            throw new ApplicationException();
-        });
-
         // create orders
-        var orders = new List<CreateOrderRequest>
-        {
-            new CreateOrderRequest(ProductId: 1, Quantity: 1),
-            new CreateOrderRequest(ProductId: 2, Quantity: 2),
-            new CreateOrderRequest(ProductId: 3, Quantity: 3)
-        };
+        var orderCount = 10;
+        await CreateOrders(orderCount);
+        _output.WriteLine($"Number of order created: {orderCount}");
 
-        orders.ForEach(async order => await httpClient.PostAsJsonAsync($"{Setup.ApiUrl}/order", order));
-
-        // wait for events to be published
+        // wait for the service to process the orders
         Thread.Sleep(5000);
 
         // subscribe
         var sqs = new SqsHandler(Setup.SQSClient, _fixture.OrderCreatedQueueUrl);
-        var handledEvents = await sqs.Handle(CancellationToken.None);
-        Assert.Equal(orders.Count, handledEvents.Count);
+
+        var receivedCount = 0;
+        while (receivedCount < orderCount)
+        {
+            var handledEvents = await sqs.Handle(CancellationToken.None);
+            receivedCount += handledEvents.Count;
+            _output.WriteLine($"Handled {receivedCount} of {orderCount}");
+        }
+
+        Assert.Equal(orderCount, receivedCount);
+    }
+
+    async Task CreateOrders(int count)
+    {
+        var created = 0;
+        var createTasks = new List<Task>();
+
+        while (created < count)
+        {
+            created++;
+
+            var order = new CreateOrderRequest(ProductId: created, Quantity: 1);
+            var task = httpClient.PostAsJsonAsync($"{Setup.ApiUrl}/order", order);
+            createTasks.Add(task);
+        }
+
+        await Task.WhenAll(createTasks);
     }
 }
